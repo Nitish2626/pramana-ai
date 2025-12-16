@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { CornerRightUp } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
-import { ChatSchema, schema } from "../types/ChatSchema";
+import { ChatSchema, schema } from "../../types/ChatSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 
@@ -48,7 +48,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="w-6/12 flex flex-col items-center justify-between gap-10 pb-10 rounded-lg shadow-2xl">
+    <div className="flex flex-col items-center justify-between gap-10 pb-10 rounded-lg shadow-2xl">
       <div className="w-full h-fit flex items-center justify-center py-4">
         <div
           className="w-11/12 h-96 overflow-auto flex flex-col gap-6 py-4"
@@ -100,7 +100,7 @@ const HomePage = () => {
 
           <button
             type="submit"
-            className={`bg-gray-200 shadow-2xl rounded-full p-1 hover:bg-white ${
+            className={`bg-accent rounded-full p-2 text-white hover:bg-black ${
               disabled
                 ? "opacity-30 cursor-not-allowed"
                 : "opacity-100 cursor-pointer"
