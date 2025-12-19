@@ -134,10 +134,18 @@ const LoginPage = () => {
                 loading={loading}
                 text="Login"
                 icon={<LogIn />}
+                styles={`w-full ${
+                  loading ? "cursor-crosshair" : "cursor-pointer"
+                }`}
               />
               <CardDescription>
                 Don't have an account ?
-                <Link href={F_SIGNUP} className="ms-2 text-foreground font-semibold hover:underline hover:underline-offset-5">Create Account</Link>
+                <Link
+                  href={F_SIGNUP}
+                  className="ms-2 text-foreground font-semibold hover:underline hover:underline-offset-5"
+                >
+                  Create Account
+                </Link>
               </CardDescription>
             </CardFooter>
           </div>

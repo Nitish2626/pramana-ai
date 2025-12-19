@@ -1,0 +1,22 @@
+import mongoose from "mongoose";
+
+const MONGODB_URL = process.env.MONGODB_URL as string;
+
+if (!MONGODB_URL) throw new Error("Please add MONGODB_URL to .env file!");
+
+let cached = (global as any).mongoose || { conn: null, promise: null };
+
+export const connectToDatabase = async () => {
+  if (cached.conn) return cached.conn;
+
+  if (!cached.promise) {
+    cached.promise = mongoose
+      .connect(MONGODB_URL, { bufferCommands: false })
+      .then((mongoose) => mongoose);
+  }
+
+  cached.conn = await cached.promise;
+  (global as any).mongoose = cached;
+  
+  return cached.conn;
+};
