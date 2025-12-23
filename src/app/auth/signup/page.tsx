@@ -20,22 +20,25 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import ButtonLoading from "@/components/custom/ButtonLoading";
 import { F_LOGIN } from "../../../../routes/appRoutes";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { showToast } from "@/lib/toast";
+import { LoginFormData } from "../login/page";
+import { authClient } from "@/lib/auth-client";
+import { SignupSchema } from "@/types/AuthSchema";
 
-type Formdata = {
+interface SignupFormdata extends LoginFormData {
   username: string;
-  email: string;
-  password: string;
-};
+}
 
 const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showOtpDialog, setShowOtpDialog] = useState(false);
-  const [signupData, setSignupData] = useState<Formdata>({
-    username: "",
-    email: "",
-    password: "",
-  });
+  // const [showOtpDialog, setShowOtpDialog] = useState(false);
+  // const [signupData, setSignupData] = useState<SignupFormdata>({
+  //   username: "",
+  //   email: "",
+  //   password: "",
+  // });
 
   const {
     register,
@@ -43,70 +46,28 @@ const SignupPage = () => {
     reset,
     setError,
     formState: { errors },
-  } = useForm<Formdata>();
+  } = useForm<SignupFormdata>({
+    resolver: zodResolver(SignupSchema),
+  });
 
-  const handleSignup = async (data: Formdata) => {
-    // try {
-    //   setLoading(true);
-    //   setSignupData({
-    //     username: data.username,
-    //     email: data.email,
-    //     password: data.password,
-    //   });
-    //   const responseData = await axios.post(B_SIGNUP, data);
-    //   console.log("signup res", responseData.data);
-    //   if (responseData.data.status === BAD_REQUEST) {
-    //     setError("username", {
-    //       type: "server",
-    //       message: responseData.data.message.username[0],
-    //     });
-    //     setError("email", {
-    //       type: "server",
-    //       message: responseData.data.message.email[0],
-    //     });
-    //     setError("password", {
-    //       type: "server",
-    //       message: responseData.data.message.password[0],
-    //     });
-    //     setLoading(false);
-    //     return;
-    //   }
-    //   if (
-    //     responseData.data.status === UNPROCESSABLE_ENTITY ||
-    //     responseData.data.status === CONFLICT ||
-    //     responseData.data.status === INTERNAL_SERVER_ERROR
-    //   ) {
-    //     showToast("error", responseData.data.message);
-    //     setLoading(false);
-    //     return;
-    //   }
-    //   console.log("Form Submitted", data);
-    //   setShowOtpDialog(true);
-    //   showToast("success", "OTP sent !");
-    //   const otpdata = await axios.post(B_SEND_OTP, {
-    //     email: data?.email,
-    //     mailType: 0,
-    //   });
-    //   console.log("otpdata", otpdata);
-    //   if (
-    //     otpdata.data.status === BAD_REQUEST ||
-    //     otpdata.data.status === UNPROCESSABLE_ENTITY ||
-    //     otpdata.data.status === INTERNAL_SERVER_ERROR
-    //   ) {
-    //     showToast("error", responseData.data.message);
-    //     return;
-    //   }
-    //   console.log("otp", otpdata);
-    //   reset();
-    //   showToast("success", otpdata.data.message);
-    //   // return response(true, OK, otpdata.data.message);
-    //   // return response(true, OK, "hii");
-    // } catch (error) {
-    //   console.log("SIGNUP ERROR", error);
-    //   showToast("error", "Something went wrong !");
-    // } finally {
-    //   setLoading(false);
-    // }
+  const handleSignup = async (signupData: SignupFormdata) => {
+    try {
+      setLoading(true);
+      const { data, error } = await authClient.signUp.email({
+        name: signupData.username, // required
+        email: signupData.email, // required
+        password: signupData.password, // required
+        // image: "https://example.com/image.png",
+        // callbackURL: "https://example.com/callback",
+      });
+      console.log("data", data);
+      console.log("error", error);
+    } catch (error) {
+      console.log("SIGNUP ERROR", error);
+      showToast("error", "Something went wrong !");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -130,7 +91,7 @@ const SignupPage = () => {
                   id="username"
                   type="text"
                   placeholder="abc"
-                  //   {...register("username", validateUsername)}
+                  {...register("username")}
                 />
                 {errors.username && (
                   <p className="text-red-500 text-sm">
@@ -145,7 +106,7 @@ const SignupPage = () => {
                   id="email"
                   type="email"
                   placeholder="m@example.com"
-                  //   {...register("email", validateEmail)}
+                  {...register("email")}
                 />
                 {errors.email && (
                   <p className="text-red-500 text-sm">
@@ -161,7 +122,7 @@ const SignupPage = () => {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="*******************"
-                    // {...register("password", validatePassword)}
+                    {...register("password")}
                     className="border-r-0 rounded-tr-none rounded-br-none"
                   />
                   <Button
@@ -185,7 +146,9 @@ const SignupPage = () => {
                   type="submit"
                   loading={loading}
                   text="Signup"
-                  styles={`w-full ${loading ? "cursor-crosshair" : "cursor-pointer"}`}
+                  styles={`w-full ${
+                    loading ? "cursor-crosshair" : "cursor-pointer"
+                  }`}
                 />
                 <CardDescription>
                   Already have an account ?

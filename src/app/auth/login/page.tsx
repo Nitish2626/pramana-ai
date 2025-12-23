@@ -21,8 +21,11 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import ButtonLoading from "@/components/custom/ButtonLoading";
 import { F_SIGNUP } from "../../../../routes/appRoutes";
+import { showToast } from "@/lib/toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginSchema } from "@/types/AuthSchema";
 
-type Formdata = {
+export interface LoginFormData {
   email: string;
   password: string;
 };
@@ -37,33 +40,31 @@ const LoginPage = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<Formdata>();
+  } = useForm<LoginFormData>({ resolver: zodResolver(LoginSchema) });
 
-  const handleLogin = async (data: Formdata) => {
-    // try {
-    //   setLoading(true);
-    //   const responseData = await axios.post(B_LOGIN, data, {
-    //     withCredentials: true,
-    //   });
-    //   console.log("login res", responseData);
-    //   if (
-    //     responseData.data.status === UNPROCESSABLE_ENTITY ||
-    //     responseData.data.status === INTERNAL_SERVER_ERROR ||
-    //     responseData.data.status === BAD_REQUEST
-    //   ) {
-    //     showToast("error", responseData.data.message);
-    //     setLoading(false);
-    //     return;
-    //   }
-    //   reset();
-    //   router.push("/user/products");
-    //   showToast("success", responseData.data.message);
-    // } catch (error) {
-    //   console.log("LOGIN ERROR", error);
-    //   showToast("error", "Something went wrong !");
-    // } finally {
-    //   setLoading(false);
-    // }
+  const handleLogin = async (data: LoginFormData) => {
+    try {
+      setLoading(true);
+      const responseData = await axios;
+      console.log("login res", responseData);
+      // if (
+      //   responseData.data.status === UNPROCESSABLE_ENTITY ||
+      //   responseData.data.status === INTERNAL_SERVER_ERROR ||
+      //   responseData.data.status === BAD_REQUEST
+      // ) {
+      //   showToast("error", responseData.data.message);
+      //   setLoading(false);
+      //   return;
+      // }
+      // reset();
+      // router.push("/user/products");
+      // showToast("success", responseData.data.message);
+    } catch (error) {
+      console.log("LOGIN ERROR", error);
+      showToast("error", "Something went wrong !");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -86,7 +87,7 @@ const LoginPage = () => {
                 id="email"
                 type="email"
                 placeholder="m@example.com"
-                // {...register("email", validateEmail)}
+                {...register("email")}
               />
               {errors.email && (
                 <p className="text-red-500 text-sm">
@@ -102,7 +103,7 @@ const LoginPage = () => {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="*******************"
-                  // {...register("password", validatePassword)}
+                  {...register("password")}
                   className="border-r-0 rounded-tr-none rounded-br-none"
                 />
                 <Button
