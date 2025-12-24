@@ -15,25 +15,36 @@ import Link from "next/link";
 import logo from "@/../public/logo.svg";
 import Image from "next/image";
 import { Eye, EyeOff, LogIn } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import ButtonLoading from "@/components/custom/ButtonLoading";
 import { F_SIGNUP } from "../../../../routes/appRoutes";
 import { showToast } from "@/lib/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/types/AuthSchema";
+import { authClient } from "@/lib/auth-client";
 
 export interface LoginFormData {
   email: string;
   password: string;
-};
+}
 
 const LoginPage = () => {
+  const session = authClient.useSession();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log("session data", session);
+
+    if (session) {
+      router.push("/");
+    }
+  }, []);
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const {
     register,
@@ -45,20 +56,24 @@ const LoginPage = () => {
   const handleLogin = async (data: LoginFormData) => {
     try {
       setLoading(true);
-      const responseData = await axios;
-      console.log("login res", responseData);
-      // if (
-      //   responseData.data.status === UNPROCESSABLE_ENTITY ||
-      //   responseData.data.status === INTERNAL_SERVER_ERROR ||
-      //   responseData.data.status === BAD_REQUEST
-      // ) {
-      //   showToast("error", responseData.data.message);
-      //   setLoading(false);
-      //   return;
-      // }
-      // reset();
-      // router.push("/user/products");
-      // showToast("success", responseData.data.message);
+
+      await authClient.signIn.email(
+        {
+          email: data.email, // required
+          password: data.password, // required
+          // rememberMe: true,
+        },
+        {
+          onSuccess(context) {
+            reset();
+            router.push("/");
+          },
+          onError(context) {
+            // console.log("error", context.error);
+            showToast("error", context.error.message as string);
+          },
+        }
+      );
     } catch (error) {
       console.log("LOGIN ERROR", error);
       showToast("error", "Something went wrong !");

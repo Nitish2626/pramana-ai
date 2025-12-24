@@ -15,9 +15,8 @@ import Link from "next/link";
 import logo from "@/../public/logo.svg";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import ButtonLoading from "@/components/custom/ButtonLoading";
 import { F_LOGIN } from "../../../../routes/appRoutes";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,12 +24,25 @@ import { showToast } from "@/lib/toast";
 import { LoginFormData } from "../login/page";
 import { authClient } from "@/lib/auth-client";
 import { SignupSchema } from "@/types/AuthSchema";
+import { useRouter } from "next/navigation";
 
 interface SignupFormdata extends LoginFormData {
   username: string;
 }
 
 const SignupPage = () => {
+  const session = authClient.useSession();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log("session data", session);
+
+    if (session) {
+      router.push("/");
+    }
+  }, []);
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   // const [showOtpDialog, setShowOtpDialog] = useState(false);
@@ -53,15 +65,24 @@ const SignupPage = () => {
   const handleSignup = async (signupData: SignupFormdata) => {
     try {
       setLoading(true);
-      const { data, error } = await authClient.signUp.email({
-        name: signupData.username, // required
-        email: signupData.email, // required
-        password: signupData.password, // required
-        // image: "https://example.com/image.png",
-        // callbackURL: "https://example.com/callback",
-      });
-      console.log("data", data);
-      console.log("error", error);
+      await authClient.signUp.email(
+        {
+          name: signupData.username, // required
+          email: signupData.email, // required
+          password: signupData.password, // required
+        },
+        {
+          onSuccess(context) {
+            // console.log("data", context.data);
+            reset();
+            router.push("/auth/login");
+          },
+          onError(context) {
+            // console.log("error", context.error);
+            showToast("error", context.error.message as string);
+          },
+        }
+      );
     } catch (error) {
       console.log("SIGNUP ERROR", error);
       showToast("error", "Something went wrong !");

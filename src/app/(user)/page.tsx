@@ -8,8 +8,22 @@ import { useForm, Controller } from "react-hook-form";
 import { ChatSchema, schema } from "../../types/ChatSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const HomePage = () => {
+  const session = authClient.useSession();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    console.log("session data", session);
+
+    if (!session) {
+      router.push("/auth/login");
+    }
+  }, []);
+
   const { reset, handleSubmit, control } = useForm<ChatSchema>({
     resolver: zodResolver(schema),
   });
