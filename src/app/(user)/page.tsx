@@ -1,29 +1,15 @@
 "use client";
 
 import ChatMessageContainer from "@/components/custom/ChatMessageContainer";
-import { useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { CornerRightUp } from "lucide-react";
-import { useForm, Controller } from "react-hook-form";
-import { ChatSchema, schema } from "../../types/ChatSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { CornerRightUp } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { ChatSchema, schema } from "../../types/ChatSchema";
 
 const HomePage = () => {
-  const session = authClient.useSession();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    console.log("session data", session);
-
-    if (!session) {
-      router.push("/auth/login");
-    }
-  }, []);
-
   const { reset, handleSubmit, control } = useForm<ChatSchema>({
     resolver: zodResolver(schema),
   });
@@ -63,11 +49,11 @@ const HomePage = () => {
 
   return (
     <div className="flex flex-col items-center justify-between gap-10 pb-10 rounded-lg shadow-2xl">
-      <div className="w-full h-fit flex items-center justify-center py-4">
-        <div
-          className="w-11/12 h-96 overflow-auto flex flex-col gap-6 py-4"
-          ref={chatRef}
-        >
+      <div
+        className="w-full flex items-center justify-center py-4"
+        ref={chatRef}
+      >
+        <div className="w-11/12 min-h-screen overflow-auto flex flex-col gap-6 py-4">
           {chats?.length > 0 ? (
             chats?.map((d, i) => (
               <div className="flex flex-col gap-6" key={i}>
@@ -79,14 +65,14 @@ const HomePage = () => {
               </div>
             ))
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-2xl font-bold">
+            <div className="w-full flex items-center justify-center text-2xl font-bold">
               How I Can Help You Today ?
             </div>
           )}
         </div>
       </div>
 
-      <div className="w-full flex items-end justify-center py-4">
+      <div className="w-full sticky bottom-0 bg-background flex items-end justify-center py-4">
         <form
           onSubmit={handleSubmit(sendChats)}
           className="w-11/12 flex items-center justify-between gap-4 rounded-2xl"

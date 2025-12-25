@@ -15,10 +15,6 @@ import { authClient } from "@/lib/auth-client";
 import { showToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 
-interface SessionData {
-  name: string;
-}
-
 const AppNavbar = () => {
   const router = useRouter();
 
@@ -27,6 +23,7 @@ const AppNavbar = () => {
   const handleLogout = async () => {
     try {
       await authClient.signOut();
+      showToast("success", "User logged out successfully!");
       router.push("/auth/login");
     } catch (error) {
       console.log("SIGNOUT ERROR", error);
@@ -36,7 +33,7 @@ const AppNavbar = () => {
 
   return (
     <nav className="w-full flex items-center justify-between sticky top-0 px-2 py-2 z-50 bg-background">
-      <SidebarTrigger className="cursor-pointer" />
+      <SidebarTrigger className="cursor-ew-resize" />
 
       {/* Search */}
       {/* <SearchModal /> */}

@@ -28,20 +28,10 @@ import { useRouter } from "next/navigation";
 
 interface SignupFormdata extends LoginFormData {
   username: string;
-}
+};
 
 const SignupPage = () => {
-  const session = authClient.useSession();
-
   const router = useRouter();
-
-  useEffect(() => {
-    console.log("session data", session);
-
-    if (session) {
-      router.push("/");
-    }
-  }, []);
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -75,7 +65,8 @@ const SignupPage = () => {
           onSuccess(context) {
             // console.log("data", context.data);
             reset();
-            router.push("/auth/login");
+            showToast("success", "User created successfully!");
+            router.push("/");
           },
           onError(context) {
             // console.log("error", context.error);

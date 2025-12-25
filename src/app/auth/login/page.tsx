@@ -28,20 +28,10 @@ import { authClient } from "@/lib/auth-client";
 export interface LoginFormData {
   email: string;
   password: string;
-}
+};
 
 const LoginPage = () => {
-  const session = authClient.useSession();
-
   const router = useRouter();
-
-  useEffect(() => {
-    console.log("session data", session);
-
-    if (session) {
-      router.push("/");
-    }
-  }, []);
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -66,6 +56,7 @@ const LoginPage = () => {
         {
           onSuccess(context) {
             reset();
+            showToast("success", "User logged in successfully!");
             router.push("/");
           },
           onError(context) {
