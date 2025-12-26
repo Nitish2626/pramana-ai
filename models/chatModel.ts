@@ -18,4 +18,4 @@ const chatSchema = new Schema(
   { timestamps: true }
 );
 
-export const ChatModels = models.Chat || model("Chat", chatSchema);
+export const ChatModel = models.Chat || model("Chat", chatSchema);
