@@ -8,8 +8,13 @@ import { CornerRightUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { ChatSchema, schema } from "../../types/ChatSchema";
+import { showToast } from "@/lib/toast";
+import { authClient } from "@/lib/auth-client";
 
 const HomePage = () => {
+  const session = authClient.useSession();
+  // console.log("session", session.data?.user?.id);
+
   const { reset, handleSubmit, control } = useForm<ChatSchema>({
     resolver: zodResolver(schema),
   });
@@ -27,16 +32,18 @@ const HomePage = () => {
   const sendChats = async (d: ChatSchema) => {
     const id = crypto.randomUUID();
     console.log("data", d);
+
     setChats((prev) => [
       ...prev,
       { id: id, prompt: d.prompt, response: "Thinking..." },
     ]);
+
     reset({ prompt: "" });
 
-    const response = await axios.post("/api/chat", { prompt: d.prompt });
+    const response = await axios.post("/api/get-chat", { prompt: d.prompt });
     console.log("res", response);
     if (response.data.status === 500) {
-      alert(response.data.message);
+      showToast("error", response.data.message);
       return;
     }
 
@@ -45,7 +52,30 @@ const HomePage = () => {
       ...prev,
       { id: id, prompt: d.prompt, response: response.data.data },
     ]);
+
+    let chatsData = JSON.parse(localStorage.getItem("chatsData") as string);
+    chatsData = [
+      ...chatsData,
+      { id: id, prompt: d.prompt, response: response.data.data },
+    ];
+    localStorage.setItem("chatsData", JSON.stringify(chatsData));
+
+    let data = [
+      { userId: session.data?.user?.id },
+      { id: id, prompt: d.prompt, response: response.data.data },
+    ];
+
+    const chatResponse = await axios.post("/api/add-chat", data);
+    console.log("cr", chatResponse);
   };
+
+  useEffect(() => {
+    const storedChats = JSON.parse(localStorage.getItem("chatsData") as string);
+    console.log("sc", storedChats);
+    setChats(storedChats);
+  }, []);
+
+  // console.log("chats", chats);
 
   return (
     <div className="flex flex-col items-center justify-between gap-10 pb-10 rounded-lg shadow-2xl">

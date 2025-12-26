@@ -13,7 +13,7 @@ export const POST = async (request: Request) => {
       data: response,
     });
   } catch (error) {
-    console.log("Something went wrong !");
+    console.log("B_GET_CHAT ERROR");
     return NextResponse.json({
       status: 500,
       message: "Internal Server Error !",

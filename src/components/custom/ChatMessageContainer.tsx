@@ -15,7 +15,7 @@ const ChatMessageContainer = (props: ChatProps) => {
       {props.isUser ? (
         <>
           <h3 className="max-w-8/12 rounded-lg px-2 py-2 shadow-lg bg-accent">{props.message}</h3>
-          <div
+          {/* <div
             className={`w-8 h-8 flex items-center justify-center rounded-full shadow-lg bg-accent`}
           >
             {props.isUser ? (
@@ -23,20 +23,20 @@ const ChatMessageContainer = (props: ChatProps) => {
             ) : (
               <BotMessageSquare className="text-2xl shadow" />
             )}
-          </div>
+          </div> */}
         </>
       ) : (
         <>
-          <div
-            className={`w-8 h-8 flex items-center justify-center rounded-full shadow-lg bg-accent`}
+          {/* <div
+            className={`w-8 h-8 flex items-center justify-center rounded-full shadow-lg`}
           >
             {props.isUser ? (
               <User />
             ) : (
               <BotMessageSquare className="text-2xl shadow" />
             )}
-          </div>
-          <h3 className="max-w-8/12 rounded-lg px-2 py-2 shadow-lg bg-accent">
+          </div> */}
+          <h3 className="w-full rounded-lg px-2 py-2 shadow-lg">
             {props.message || ""}
           </h3>
         </>

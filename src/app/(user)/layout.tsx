@@ -16,6 +16,8 @@ export default async function MainLayout({
     headers: await headers(),
   });
 
+  // console.log("session", session);
+
   if (!session) {
     redirect("/auth/login");
   }
