@@ -60,11 +60,8 @@ const HomePage = () => {
     ];
     localStorage.setItem("chatsData", JSON.stringify(chatsData));
 
-    let data = [
-      { userId: session.data?.user?.id },
-      { id: id, prompt: d.prompt, response: response.data.data },
-    ];
-
+    let data = { id: id, prompt: d.prompt, response: response.data.data };
+    // { userId: session.data?.user?.id },
     const chatResponse = await axios.post("/api/add-chat", data);
     console.log("cr", chatResponse);
   };

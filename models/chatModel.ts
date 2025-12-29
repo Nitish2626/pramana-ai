@@ -6,14 +6,21 @@ const chatSchema = new Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
-    chats: [
-      {
-        id: { type: String, required: true },
-        prompt: { type: String, required: true },
-        response: { type: String, required: true },
-      },
-    ],
+    conversationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Conversation",
+      required: true,
+    },
+    prompt: {
+      type: String,
+      required: true,
+    },
+    response: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
