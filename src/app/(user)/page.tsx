@@ -10,10 +10,11 @@ import { Controller, useForm } from "react-hook-form";
 import { ChatSchema, schema } from "../../types/ChatSchema";
 import { showToast } from "@/lib/toast";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { F_LOGIN } from "../../../routes/appRoutes";
 
 const HomePage = () => {
-  const session = authClient.useSession();
-  // console.log("session", session.data?.user?.id);
+  const router = useRouter();
 
   const { reset, handleSubmit, control } = useForm<ChatSchema>({
     resolver: zodResolver(schema),
@@ -22,6 +23,7 @@ const HomePage = () => {
   const [disabled, setDisabled] = useState(true);
   const [chats, setChats] = useState<ChatSchema[]>([]);
   const chatRef = useRef<HTMLDivElement>(null);
+  const [conversationId, setConversationId] = useState("");
 
   useEffect(() => {
     if (chatRef.current) {
@@ -40,30 +42,50 @@ const HomePage = () => {
 
     reset({ prompt: "" });
 
-    const response = await axios.post("/api/get-chat", { prompt: d.prompt });
-    console.log("res", response);
-    if (response.data.status === 500) {
-      showToast("error", response.data.message);
-      return;
+    try {
+      const response = await axios.post("/api/get-response", { prompt: d.prompt });
+      console.log("res", response);
+      if (response.data.status === 500) {
+        showToast("error", response.data.message);
+        return;
+      }
+
+      setChats((prev) => prev.filter((d) => d.id !== id));
+      setChats((prev) => [
+        ...prev,
+        { id: id, prompt: d.prompt, response: response.data.data },
+      ]);
+
+      let chatsData = JSON.parse(localStorage.getItem("chatsData") as string);
+      chatsData = [
+        ...chatsData,
+        { id: id, prompt: d.prompt, response: response.data.data },
+      ];
+      localStorage.setItem("chatsData", JSON.stringify(chatsData));
+
+      let data = {
+        conversationId: conversationId,
+        id: id,
+        prompt: d.prompt,
+        response: response.data.data,
+      };
+      const chatResponse = await axios.post("/api/add-chat", data);
+      console.log("cr", chatResponse);
+
+      if (chatResponse.data.status === 401) {
+        router.push(F_LOGIN);
+      }
+
+      if (chatResponse.data.status === 500) {
+        showToast("error", response.data.message);
+        return;
+      }
+
+      setConversationId(chatResponse.data.data);
+    } catch (error) {
+      console.log("F_HOME_PAGE ERROR", error);
+      showToast("error", "Something went wrong!");
     }
-
-    setChats((prev) => prev.filter((d) => d.id !== id));
-    setChats((prev) => [
-      ...prev,
-      { id: id, prompt: d.prompt, response: response.data.data },
-    ]);
-
-    let chatsData = JSON.parse(localStorage.getItem("chatsData") as string);
-    chatsData = [
-      ...chatsData,
-      { id: id, prompt: d.prompt, response: response.data.data },
-    ];
-    localStorage.setItem("chatsData", JSON.stringify(chatsData));
-
-    let data = { id: id, prompt: d.prompt, response: response.data.data };
-    // { userId: session.data?.user?.id },
-    const chatResponse = await axios.post("/api/add-chat", data);
-    console.log("cr", chatResponse);
   };
 
   useEffect(() => {
