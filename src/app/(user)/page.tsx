@@ -43,7 +43,9 @@ const HomePage = () => {
     reset({ prompt: "" });
 
     try {
-      const response = await axios.post("/api/get-response", { prompt: d.prompt });
+      const response = await axios.post("/api/get-response", {
+        prompt: d.prompt,
+      });
       console.log("res", response);
       if (response.data.status === 500) {
         showToast("error", response.data.message);
@@ -81,7 +83,8 @@ const HomePage = () => {
         return;
       }
 
-      setConversationId(chatResponse.data.data);
+      setConversationId((prev)=> prev === "" ? chatResponse.data.data : null);
+      router.push(`/chat/${chatResponse.data.data}`);
     } catch (error) {
       console.log("F_HOME_PAGE ERROR", error);
       showToast("error", "Something went wrong!");

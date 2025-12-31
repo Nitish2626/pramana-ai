@@ -30,7 +30,7 @@ export const POST = async (request: NextRequest) => {
       });
       await newConversation.save();
       conversationId = newConversation._id;
-      // console.log("new conv", newConversation);
+      console.log("new conv", newConversation);
     }
 
     const newChat = new ChatModel({

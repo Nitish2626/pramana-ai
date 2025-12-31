@@ -14,7 +14,7 @@ import { F_LOGIN } from "../../../../../routes/appRoutes";
 
 const ChatPage = () => {
   const router = useRouter();
-  const params= useParams();
+  const params = useParams();
   console.log("params", params.id);
 
   const { reset, handleSubmit, control } = useForm<ChatSchema>({
@@ -24,13 +24,26 @@ const ChatPage = () => {
   const [disabled, setDisabled] = useState(true);
   const [chats, setChats] = useState<ChatSchema[]>([]);
   const chatRef = useRef<HTMLDivElement>(null);
-  const [conversationId, setConversationId] = useState("");
+  const [conversationId, setConversationId] = useState<string | null>(
+    params.id as string
+  );
 
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
   }, [chats]);
+
+  const fetchChats = async (convId: string) => {
+    console.log("convId", convId);
+    const chatResponse = await axios.get(`/api/get-chat/${convId}`);
+    console.log("fc", chatResponse);
+  };
+
+  useEffect(() => {
+    console.log("conversation id", conversationId);
+    fetchChats(conversationId as string);
+  }, []);
 
   const sendChats = async (d: ChatSchema) => {
     const id = crypto.randomUUID();
@@ -89,11 +102,11 @@ const ChatPage = () => {
     }
   };
 
-  useEffect(() => {
-    const storedChats = JSON.parse(localStorage.getItem("chatsData") as string);
-    console.log("sc", storedChats);
-    setChats(storedChats);
-  }, []);
+  // useEffect(() => {
+  //   const storedChats = JSON.parse(localStorage.getItem("chatsData") as string);
+  //   console.log("sc", storedChats);
+  //   setChats(storedChats);
+  // }, []);
 
   // console.log("chats", chats);
 
