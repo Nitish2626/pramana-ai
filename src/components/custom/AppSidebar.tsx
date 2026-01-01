@@ -12,10 +12,50 @@ import {
   useSidebar,
 } from "../ui/sidebar";
 import Link from "next/link";
-import Image from "next/image";
+import { useEffect, useState } from "react";
+import { showToast } from "@/lib/toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { F_LOGIN } from "../../../routes/appRoutes";
+import Loader from "./Loader";
+
+interface ConversationData {
+  _id: string;
+  title: string;
+}
 
 const AppSidebar = () => {
+  const router = useRouter();
   const { toggleSidebar } = useSidebar();
+
+  const [conversations, setConversations] = useState<ConversationData[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchConversations = async () => {
+    try {
+      setIsLoading(true);
+      const conversationResponse = await axios.get("/api/get-conversation");
+      console.log("conv res", conversationResponse);
+
+      if (conversationResponse.data.status === 401) {
+        router.push(F_LOGIN);
+      } else if (conversationResponse.data.status === 500) {
+        showToast("error", conversationResponse.data.message);
+        return;
+      }
+
+      setConversations(conversationResponse.data.data);
+    } catch (error) {
+      console.log("F_GET_CONVERSATIONS ERROR", error);
+      showToast("error", "Something went wrong!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchConversations();
+  }, []);
 
   return (
     <Sidebar>
@@ -33,7 +73,10 @@ const AppSidebar = () => {
                 <span className="text-sm font-medium">Pramana AI</span>
               </Link>
 
-              <X className="w-5 h-5 md:hidden cursor-pointer" onClick={toggleSidebar} />
+              <X
+                className="w-5 h-5 md:hidden cursor-pointer"
+                onClick={toggleSidebar}
+              />
             </div>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -41,22 +84,29 @@ const AppSidebar = () => {
 
       <SidebarSeparator />
 
-      <SidebarContent>
-        <SidebarMenu className="p-2">
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              {/* <Link
-                href={item.url}
-                className="flex items-center gap-2 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground"
-                title={item.title}
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <SidebarContent>
+          <SidebarMenu className="p-2">
+            {conversations.map((conv) => (
+              <SidebarMenuItem
+                key={conv._id}
+                className="data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground"
               >
-                <item.icon size={18} />
-                <span>{item.title}</span>
-              </Link> */}
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarContent>
+                <SidebarMenuButton asChild>
+                  <Link
+                    href={`/chat/${conv._id}`}
+                    title={conv.title}
+                  >
+                    <span>{conv.title}</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
+        </SidebarContent>
+      )}
     </Sidebar>
   );
 };

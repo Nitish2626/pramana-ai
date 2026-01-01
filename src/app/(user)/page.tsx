@@ -2,28 +2,39 @@
 
 import ChatMessageContainer from "@/components/custom/ChatMessageContainer";
 import { Textarea } from "@/components/ui/textarea";
+import { showToast } from "@/lib/toast";
+import { zodSchema } from "@/types/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { CornerRightUp } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ChatSchema, schema } from "../../types/ChatSchema";
-import { showToast } from "@/lib/toast";
-import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
 import { F_LOGIN } from "../../../routes/appRoutes";
+
+export interface ChatsData {
+  id?: string;
+  prompt: string;
+  response?: string;
+}
 
 const HomePage = () => {
   const router = useRouter();
 
-  const { reset, handleSubmit, control } = useForm<ChatSchema>({
-    resolver: zodResolver(schema),
+  const chatSchema = zodSchema.pick({
+    id: true,
+    prompt: true,
+    response: true,
+  });
+
+  const { reset, handleSubmit, control } = useForm({
+    resolver: zodResolver(chatSchema),
   });
 
   const [disabled, setDisabled] = useState(true);
-  const [chats, setChats] = useState<ChatSchema[]>([]);
+  const [chats, setChats] = useState<ChatsData[]>([]);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  const [conversationId, setConversationId] = useState("");
 
   useEffect(() => {
     if (chatRef.current) {
@@ -31,9 +42,9 @@ const HomePage = () => {
     }
   }, [chats]);
 
-  const sendChats = async (d: ChatSchema) => {
+  const sendChats = async (d: ChatsData) => {
     const id = crypto.randomUUID();
-    console.log("data", d);
+    // console.log("data", d);
 
     setChats((prev) => [
       ...prev,
@@ -46,7 +57,7 @@ const HomePage = () => {
       const response = await axios.post("/api/get-response", {
         prompt: d.prompt,
       });
-      console.log("res", response);
+      // console.log("ai res", response);
       if (response.data.status === 500) {
         showToast("error", response.data.message);
         return;
@@ -55,24 +66,16 @@ const HomePage = () => {
       setChats((prev) => prev.filter((d) => d.id !== id));
       setChats((prev) => [
         ...prev,
-        { id: id, prompt: d.prompt, response: response.data.data },
+        { prompt: d.prompt, response: response.data.data },
       ]);
-
-      let chatsData = JSON.parse(localStorage.getItem("chatsData") as string);
-      chatsData = [
-        ...chatsData,
-        { id: id, prompt: d.prompt, response: response.data.data },
-      ];
-      localStorage.setItem("chatsData", JSON.stringify(chatsData));
 
       let data = {
         conversationId: conversationId,
-        id: id,
         prompt: d.prompt,
         response: response.data.data,
       };
       const chatResponse = await axios.post("/api/add-chat", data);
-      console.log("cr", chatResponse);
+      // console.log("cr", chatResponse);
 
       if (chatResponse.data.status === 401) {
         router.push(F_LOGIN);
@@ -83,20 +86,12 @@ const HomePage = () => {
         return;
       }
 
-      setConversationId((prev)=> prev === "" ? chatResponse.data.data : null);
-      router.push(`/chat/${chatResponse.data.data}`);
+      setConversationId(chatResponse.data.data);
     } catch (error) {
-      console.log("F_HOME_PAGE ERROR", error);
+      console.log("F_SEND_CHATS ERROR", error);
       showToast("error", "Something went wrong!");
     }
   };
-
-  useEffect(() => {
-    const storedChats = JSON.parse(localStorage.getItem("chatsData") as string);
-    console.log("sc", storedChats);
-    setChats(storedChats);
-  }, []);
-
   // console.log("chats", chats);
 
   return (

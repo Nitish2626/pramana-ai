@@ -6,7 +6,7 @@ import { ChatModel } from "../../../../../models/chatModel";
 
 export const GET = async (
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
     await connectToDatabase();
@@ -14,25 +14,26 @@ export const GET = async (
     const session = await auth.api.getSession({
       headers: await headers(),
     });
-    console.log("params", await params?.id);
+    const convId= (await params).id;
+    console.log("params", convId);
 
-    // if (!params?.id) {
-    //   return NextResponse.json({
-    //     status: 400,
-    //     message: "Conversation id not found !",
-    //   });
-    // }
+    if (!convId) {
+      return NextResponse.json({
+        status: 404,
+        message: "Conversation id not found !",
+      });
+    }
 
     const getChats = await ChatModel.find({
       userId: session?.user?.id,
-      conversationId: await params?.id,
+      conversationId: convId,
     });
-    console.log("getchats", getChats);
+    // console.log("getchats", getChats);
 
     return NextResponse.json({
       status: 200,
       message: "Chats found successfully!",
-      data: getChats
+      data: getChats,
     });
   } catch (error) {
     console.log("B_GET_CHAT ERROR", error);
