@@ -1,7 +1,7 @@
 "use client";
 
-import { LogOut, Settings, User } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { BookKey, LogOut, RotateCcwKey } from "lucide-react";
+import { Avatar, AvatarFallback } from "../ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,7 @@ import { SidebarTrigger } from "../ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { showToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
+import { F_LOGIN } from "../../../routes/appRoutes";
 
 const AppNavbar = () => {
   const router = useRouter();
@@ -24,7 +25,7 @@ const AppNavbar = () => {
     try {
       await authClient.signOut();
       showToast("success", "User logged out successfully!");
-      router.push("/auth/login");
+      router.push(F_LOGIN);
     } catch (error) {
       console.log("SIGNOUT ERROR", error);
       showToast("error", "Something went wrong !");
@@ -42,17 +43,17 @@ const AppNavbar = () => {
       <DropdownMenu>
         <DropdownMenuTrigger className="cursor-pointer">
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
+            {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
             <AvatarFallback>
               {data?.user?.name?.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-40">
+        <DropdownMenuContent className="w-48">
           <DropdownMenuLabel>
             <div className="flex items-center gap-4">
               <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
+                {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
                 <AvatarFallback>
                   {data?.user?.name?.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
@@ -71,12 +72,12 @@ const AppNavbar = () => {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem className="cursor-pointer py-2 font-semibold">
-            <User />
-            Profile
+            <BookKey />
+            Update Password
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer py-2 font-semibold">
-            <Settings />
-            Settings
+            <RotateCcwKey />
+            Reset Password
           </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"

@@ -15,7 +15,7 @@ import Link from "next/link";
 import logo from "@/../public/logo.svg";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import ButtonLoading from "@/components/custom/ButtonLoading";
 import { F_LOGIN } from "../../../../routes/appRoutes";
@@ -23,15 +23,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { showToast } from "@/lib/toast";
 import { LoginFormData } from "../login/page";
 import { authClient } from "@/lib/auth-client";
-import { SignupSchema } from "@/types/AuthSchema";
 import { useRouter } from "next/navigation";
+import { zodSchema } from "@/types/zodSchema";
 
 interface SignupFormdata extends LoginFormData {
   username: string;
-};
+}
 
 const SignupPage = () => {
   const router = useRouter();
+
+  const signupSchema = zodSchema.pick({
+    username: true,
+    email: true,
+    password: true,
+  });
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -49,7 +55,7 @@ const SignupPage = () => {
     setError,
     formState: { errors },
   } = useForm<SignupFormdata>({
-    resolver: zodResolver(SignupSchema),
+    resolver: zodResolver(signupSchema),
   });
 
   const handleSignup = async (signupData: SignupFormdata) => {

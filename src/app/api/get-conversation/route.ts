@@ -18,7 +18,7 @@ export const GET = async () => {
 
     const getConversation = await ConversationModel.find({
       userId: session?.user?.id,
-    }).select("title");
+    }).select("title").sort({createdAt: -1});
 
     return NextResponse.json({
       status: 200,

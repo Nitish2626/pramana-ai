@@ -1,9 +1,12 @@
 "use client";
 
-import { X } from "lucide-react";
+import { MessageSquareShare, X } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -15,7 +18,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { showToast } from "@/lib/toast";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { F_LOGIN } from "../../../routes/appRoutes";
 import Loader from "./Loader";
 
@@ -26,6 +29,9 @@ interface ConversationData {
 
 const AppSidebar = () => {
   const router = useRouter();
+  const pathname = usePathname();
+  // console.log("pn", pathname);
+
   const { toggleSidebar } = useSidebar();
 
   const [conversations, setConversations] = useState<ConversationData[]>([]);
@@ -63,7 +69,7 @@ const AppSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex items-center justify-between gap-2 p-2">
-              <Link href={""} className="flex items-center gap-3">
+              <Link href="/" className="flex items-center gap-3">
                 <img
                   src={"https://github.com/shadcn.png"}
                   width={20}
@@ -88,23 +94,45 @@ const AppSidebar = () => {
         <Loader />
       ) : (
         <SidebarContent>
-          <SidebarMenu className="p-2">
-            {conversations.map((conv) => (
-              <SidebarMenuItem
-                key={conv._id}
-                className="data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground"
-              >
-                <SidebarMenuButton asChild>
-                  <Link
-                    href={`/chat/${conv._id}`}
-                    title={conv.title}
-                  >
-                    <span>{conv.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarMenu className="p-2">
+                <SidebarMenuItem className="h-full overflow-auto">
+                  <SidebarMenuButton asChild data-active={pathname === "/"}>
+                    <Link
+                      href={`/`}
+                      title="New Chat"
+                      className="h-10 flex items-center font-semibold gap-2 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground"
+                    >
+                      <MessageSquareShare />
+                      <span>New Chat</span>
+                    </Link>
+                  </SidebarMenuButton>
+
+                  <SidebarGroupLabel className="mt-2">Your Chats</SidebarGroupLabel>
+                  {conversations.map((conv) => {
+                    const isActive = pathname === `/chat/${conv._id}`;
+
+                    return (
+                      <SidebarMenuButton
+                        key={conv._id}
+                        data-active={isActive}
+                        asChild
+                      >
+                        <Link
+                          href={`/chat/${conv._id}`}
+                          title={conv.title}
+                          className="h-10 text-ellipsis data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground"
+                        >
+                          <span>{conv.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    );
+                  })}
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
         </SidebarContent>
       )}
     </Sidebar>

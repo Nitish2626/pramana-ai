@@ -27,7 +27,7 @@ const HomePage = () => {
     response: true,
   });
 
-  const { reset, handleSubmit, control } = useForm({
+  const { reset, handleSubmit, control } = useForm<ChatsData>({
     resolver: zodResolver(chatSchema),
   });
 
@@ -87,6 +87,7 @@ const HomePage = () => {
       }
 
       setConversationId(chatResponse.data.data);
+      router.push(`/chat/${chatResponse.data.data}`);
     } catch (error) {
       console.log("F_SEND_CHATS ERROR", error);
       showToast("error", "Something went wrong!");
