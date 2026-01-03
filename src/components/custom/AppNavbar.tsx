@@ -14,7 +14,8 @@ import { SidebarTrigger } from "../ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { showToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
-import { F_LOGIN } from "../../../routes/appRoutes";
+import { F_LOGIN, F_CHANGE_PASSWORD } from "../../../routes/appRoutes";
+import Link from "next/link";
 
 const AppNavbar = () => {
   const router = useRouter();
@@ -72,8 +73,10 @@ const AppNavbar = () => {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem className="cursor-pointer py-2 font-semibold">
-            <BookKey />
-            Update Password
+            <Link href={F_CHANGE_PASSWORD} className="flex items-center gap-2">
+              <BookKey />
+              Change Password
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer py-2 font-semibold">
             <RotateCcwKey />
