@@ -14,7 +14,11 @@ import { SidebarTrigger } from "../ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { showToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
-import { F_LOGIN, F_CHANGE_PASSWORD } from "../../../routes/appRoutes";
+import {
+  F_LOGIN,
+  F_CHANGE_PASSWORD,
+  F_EMAIL_VERIFICATION,
+} from "../../../routes/appRoutes";
 import Link from "next/link";
 
 const AppNavbar = () => {
@@ -79,8 +83,13 @@ const AppNavbar = () => {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer py-2 font-semibold">
-            <RotateCcwKey />
-            Reset Password
+            <Link
+              href={F_EMAIL_VERIFICATION}
+              className="flex items-center gap-2"
+            >
+              <RotateCcwKey />
+              Reset Password
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
             variant="destructive"

@@ -66,27 +66,34 @@ const ChangePasswordPage = () => {
   const [loading, setLoading] = useState(false);
 
   const handleChangePassword = async (data: ChangePasswordData) => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    await authClient.changePassword(
-      {
-        newPassword: data.newPassword,
-        currentPassword: data.oldPassword,
-        revokeOtherSessions: true,
-      },
-      {
-        onSuccess(context) {
-          // console.log("data", context.data);
-          reset();
-          showToast("success", "Password changed successfully!");
-          router.push(F_LOGIN);
+      await authClient.changePassword(
+        {
+          newPassword: data.newPassword,
+          currentPassword: data.oldPassword,
+          revokeOtherSessions: true,
         },
-        onError(context) {
-          // console.log("error", context.error);
-          showToast("error", context.error.message as string);
-        },
-      }
-    );
+        {
+          onSuccess(context) {
+            // console.log("data", context.data);
+            reset();
+            showToast("success", "Password changed successfully!");
+            router.push(F_LOGIN);
+          },
+          onError(context) {
+            // console.log("error", context.error);
+            showToast("error", context.error.message as string);
+          },
+        }
+      );
+    } catch (error) {
+      console.log("F_CHANGE_PASSWORD ERROR", error);
+      showToast("error", "Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
