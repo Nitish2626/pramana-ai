@@ -72,6 +72,7 @@ const ResetPasswordPage = () => {
       await authClient.resetPassword(
         {
           newPassword: data.newPassword,
+          token: token as string
         },
         {
           onSuccess(context) {
@@ -89,8 +90,6 @@ const ResetPasswordPage = () => {
     } catch (error) {
       console.log("F_RESET_PASSWORD ERROR", error);
       showToast("error", "Something went wrong!");
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -14,7 +14,7 @@ export const auth = betterAuth({
     enabled: true,
     sendResetPassword: async ({ user, url }) => {
       await transporter.sendMail({
-        from: process.env.NODEMAILER_EMAIL,
+        from: `It's me ${process.env.NODEMAILER_EMAIL}`,
         to: user.email,
         subject: "Reset your password",
         html: `

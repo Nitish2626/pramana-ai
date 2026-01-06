@@ -60,13 +60,13 @@ const EmailVerificationPage = () => {
         },
         {
           onSuccess(context) {
-            // console.log("data", context.data);
+            console.log("data", context.data);
             reset();
             showToast("success", "Email sent successfully!");
             router.push(F_RESET_PASSWORD);
           },
           onError(context) {
-            // console.log("error", context.error);
+            console.log("error", context.error);
             showToast("error", context.error.message as string);
           },
         }
@@ -74,8 +74,6 @@ const EmailVerificationPage = () => {
     } catch (error) {
       console.log("F_EMAIL_VERIFICATION ERROR", error);
       showToast("error", "Something went wrong!");
-    } finally {
-      setLoading(false);
     }
   };
 
