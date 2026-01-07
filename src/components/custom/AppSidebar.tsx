@@ -41,7 +41,7 @@ const AppSidebar = () => {
     try {
       setIsLoading(true);
       const conversationResponse = await axios.get("/api/get-conversation");
-      console.log("conv res", conversationResponse);
+      // console.log("conv res", conversationResponse);
 
       if (conversationResponse.data.status === 401) {
         router.push(F_LOGIN);
@@ -52,7 +52,7 @@ const AppSidebar = () => {
 
       setConversations(conversationResponse.data.data);
     } catch (error) {
-      console.log("F_GET_CONVERSATIONS ERROR", error);
+      // console.log("F_GET_CONVERSATIONS ERROR", error);
       showToast("error", "Something went wrong!");
     } finally {
       setIsLoading(false);
