@@ -23,19 +23,12 @@ export default async function MainLayout({
   }
 
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="dark"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <SidebarProvider>
-        <AppSidebar />
-        <main className="w-full">
-          <AppNavbar />
-          <div>{children}</div>
-        </main>
-      </SidebarProvider>
-    </ThemeProvider>
+    <SidebarProvider>
+      <AppSidebar />
+      <main className="w-full">
+        <AppNavbar />
+        <div>{children}</div>
+      </main>
+    </SidebarProvider>
   );
 }

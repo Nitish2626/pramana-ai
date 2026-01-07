@@ -19,7 +19,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import ButtonLoading from "@/components/custom/ButtonLoading";
-import { F_SIGNUP } from "../../../../routes/appRoutes";
+import { F_EMAIL_VERIFICATION, F_SIGNUP } from "../../../../routes/appRoutes";
 import { showToast } from "@/lib/toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { authClient } from "@/lib/auth-client";
@@ -133,7 +133,7 @@ const LoginPage = () => {
               )}
 
               <Link
-                href="/auth/forgot-password"
+                href={F_EMAIL_VERIFICATION}
                 className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
               >
                 Forgot password ?
