@@ -28,9 +28,14 @@ const AppNavbar = () => {
 
   const handleLogout = async () => {
     try {
-      await authClient.signOut();
-      showToast("success", "User logged out successfully!");
-      router.push(F_LOGIN);
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            showToast("success", "User logged out successfully!");
+            router.push(F_LOGIN);
+          },
+        },
+      });
     } catch (error) {
       console.log("SIGNOUT ERROR", error);
       showToast("error", "Something went wrong !");
