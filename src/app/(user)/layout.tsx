@@ -18,7 +18,7 @@ export default async function MainLayout({
 
   // console.log("session", session);
 
-  if (!session) {
+  if (!session?.user) {
     redirect("/auth/login");
   }
 

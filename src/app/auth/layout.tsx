@@ -14,7 +14,7 @@ export default async function AuthLayout({
 
   // console.log("session", session);
 
-  if(session){
+  if(session?.user){
     redirect("/");
   }
 

@@ -61,7 +61,7 @@ const AppSidebar = () => {
 
   useEffect(() => {
     fetchConversations();
-  }, []);
+  }, [pathname]);
 
   return (
     <Sidebar>
