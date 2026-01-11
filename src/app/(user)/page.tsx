@@ -32,6 +32,7 @@ const HomePage = () => {
   });
 
   const [disabled, setDisabled] = useState(true);
+  const [response, setResponse] = useState("");
   const [chats, setChats] = useState<ChatsData[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const chatRef = useRef<HTMLDivElement>(null);
@@ -54,46 +55,67 @@ const HomePage = () => {
     reset({ prompt: "" });
 
     try {
-      const response = await axios.post("/api/get-response", {
-        prompt: d.prompt,
+      // const response = await axios.post("/api/get-response", {
+      //   prompt: d.prompt,
+      // });
+      const aiResponse = await fetch("/api/get-response", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: d.prompt }),
       });
-      // console.log("ai res", response);
-      if (response.data.status === 500) {
-        showToast("error", response.data.message);
+      console.log("ai res", aiResponse, aiResponse.body);
+
+      if (aiResponse.status === 500) {
+        showToast("error", "Internal Server Error!");
         return;
       }
+
+      const reader = aiResponse.body?.getReader();
+      console.log("reader", reader);
+      const decoder = new TextDecoder();
+      console.log("decoded", decoder);
 
       setChats((prev) => prev.filter((d) => d.id !== id));
-      setChats((prev) => [
-        ...prev,
-        { prompt: d.prompt, response: response.data.data },
-      ]);
 
-      let data = {
-        conversationId: conversationId,
-        prompt: d.prompt,
-        response: response.data.data,
-      };
-      const chatResponse = await axios.post("/api/add-chat", data);
-      // console.log("cr", chatResponse);
-
-      if (chatResponse.data.status === 401) {
-        router.push(F_LOGIN);
+      while (true) {
+        const dataReaded = await reader?.read();
+        console.log("data readed", dataReaded);
+        console.log("decoded value", decoder.decode(dataReaded?.value));
+        setResponse((prev) => prev + decoder.decode(dataReaded?.value));
+        setChats((prev) => [...prev, { prompt: d.prompt, response: response }]);
+        if (dataReaded?.done) break;
       }
 
-      if (chatResponse.data.status === 500) {
-        showToast("error", response.data.message);
-        return;
-      }
+      console.log("response inside", response);
+      console.log("chats inside", chats);
 
-      setConversationId(chatResponse.data.data);
-      router.push(`/chat/${chatResponse.data.data}`);
+      // let data = {
+      //   conversationId: conversationId,
+      //   prompt: d.prompt,
+      //   response: response.data.data,
+      // };
+      // const chatResponse = await axios.post("/api/add-chat", data);
+      // // console.log("cr", chatResponse);
+
+      // if (chatResponse.data.status === 401) {
+      //   router.push(F_LOGIN);
+      // }
+
+      // if (chatResponse.data.status === 500) {
+      //   showToast("error", response.data.message);
+      //   return;
+      // }
+
+      // setConversationId(chatResponse.data.data);
+      // router.push(`/chat/${chatResponse.data.data}`);
     } catch (error) {
       console.log("F_SEND_CHATS ERROR", error);
       showToast("error", "Something went wrong!");
     }
   };
   // console.log("chats", chats);
+  console.log("response inside", response);
+  console.log("chats inside", chats);
 
   return (
     <div className="flex flex-col items-center justify-between gap-10 pb-10 rounded-lg shadow-2xl">

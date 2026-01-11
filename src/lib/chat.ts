@@ -4,6 +4,13 @@ import { vectorStore } from "./prepate";
 const llm = new ChatGoogleGenerativeAI({
   model: "gemini-2.5-flash-lite",
   temperature: 0,
+  callbacks:[
+    {
+      handleLLMNewToken(token){
+        
+      }
+    }
+  ]
 });
 
 export const chat = async (prompt: string) => {
