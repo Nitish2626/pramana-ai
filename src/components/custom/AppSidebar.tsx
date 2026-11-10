@@ -70,7 +70,7 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <div className="flex items-center justify-between gap-2 p-2">
               <Link href="/" className="flex items-center gap-3">
-                <img src={"/public/pramana_ai.png"} width={20} height={20} alt="logo" />
+                <img src={"/pramana_ai.png"} width={20} height={20} alt="logo" />
                 <span className="text-sm font-medium">Pramana AI</span>
               </Link>
 
