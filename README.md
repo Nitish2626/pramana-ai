@@ -37,6 +37,6 @@ It is a strong example of combining modern web development, authentication, and 
 - Google Gemini integration for answer generation
 - Pinecone vector database support for semantic retrieval
 - Secure authentication and user management
-- Responsive dashboard-style UI with dark/light theme support
+- Responsive dashboard-style UI with dark theme support
 - Modern component structure using Tailwind CSS and shadcn/ui
 - Real-time streaming chat responses for a smoother experience
