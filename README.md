@@ -1,5 +1,9 @@
 # Pramana AI
 
+<p align="center">
+  <img src="./public/pramana_ai.png" alt="Pramana AI" width="100" />
+</p>
+
 A modern AI-powered chatbot built with Next.js that helps users ask questions from uploaded or indexed knowledge sources using retrieval-augmented generation (RAG). The app combines a clean chat interface, secure authentication, and document-grounded AI responses to deliver a fast and intelligent Q&A experience.
 
 Live App: https://pramana-ai.vercel.app
