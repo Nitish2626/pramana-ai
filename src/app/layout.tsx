@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "Pramana AI",
   description:
     "Pramana AI is an assistant which helps you to verify text written in ancient vedas like Rigveda, Samaveda, Yajurveda and Atharvaveda, so that you can't blindly follow irrational rituals in the name of culture.",
+  icons: {
+    icon: "/pramana_ai.png",
+  },
 };
 
 export default function RootLayout({

@@ -21,6 +21,7 @@ import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import { F_LOGIN } from "../../../routes/appRoutes";
 import Loader from "./Loader";
+import pramanaAI from "../../../public/pramana_ai.png";
 
 interface ConversationData {
   _id: string;
@@ -70,12 +71,7 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <div className="flex items-center justify-between gap-2 p-2">
               <Link href="/" className="flex items-center gap-3">
-                <img
-                  src={"https://github.com/shadcn.png"}
-                  width={20}
-                  height={20}
-                  alt="logo"
-                />
+                <img src={pramanaAI} width={20} height={20} alt="logo" />
                 <span className="text-sm font-medium">Pramana AI</span>
               </Link>
 
@@ -109,7 +105,9 @@ const AppSidebar = () => {
                     </Link>
                   </SidebarMenuButton>
 
-                  <SidebarGroupLabel className="mt-2">Your Chats</SidebarGroupLabel>
+                  <SidebarGroupLabel className="mt-2">
+                    Your Chats
+                  </SidebarGroupLabel>
                   {conversations.map((conv) => {
                     const isActive = pathname === `/chat/${conv._id}`;
 
