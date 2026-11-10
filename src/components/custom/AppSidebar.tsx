@@ -21,7 +21,6 @@ import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import { F_LOGIN } from "../../../routes/appRoutes";
 import Loader from "./Loader";
-import pramanaAI from "../../../public/pramana_ai.png";
 
 interface ConversationData {
   _id: string;
@@ -71,7 +70,7 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <div className="flex items-center justify-between gap-2 p-2">
               <Link href="/" className="flex items-center gap-3">
-                <img src={pramanaAI} width={20} height={20} alt="logo" />
+                <img src={"../../../public/pramana_ai.png"} width={20} height={20} alt="logo" />
                 <span className="text-sm font-medium">Pramana AI</span>
               </Link>
 

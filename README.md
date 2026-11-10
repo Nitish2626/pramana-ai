@@ -1,4 +1,4 @@
-# Vedas Chatbot
+# Pramana AI
 
 A modern AI-powered chatbot built with Next.js that helps users ask questions from uploaded or indexed knowledge sources using retrieval-augmented generation (RAG). The app combines a clean chat interface, secure authentication, and document-grounded AI responses to deliver a fast and intelligent Q&A experience.
 
@@ -12,7 +12,7 @@ A modern AI-powered chatbot built with Next.js that helps users ask questions fr
 
 ## Overview
 
-Vedas Chatbot is designed to make information retrieval smarter and more conversational. Instead of relying only on static FAQ pages or manual lookups, the system searches relevant document content, retrieves meaningful context, and generates grounded answers using large language models.
+Pramana AI is designed to make information retrieval smarter and more conversational. Instead of relying only on static FAQ pages or manual lookups, the system searches relevant document content, retrieves meaningful context, and generates grounded answers using large language models.
 
 This project is ideal for building a knowledge assistant for internal documentation, educational content, product guides, or business resources where users need quick and accurate answers from existing material.
 
@@ -20,7 +20,7 @@ This project is ideal for building a knowledge assistant for internal documentat
 
 This project addresses a common problem: large sets of information are often scattered across PDFs, documents, and internal resources, making it difficult to find the right answer quickly.
 
-Vedas Chatbot solves that by:
+Pramana AI solves that by:
 
 - turning document knowledge into searchable, retrievable context
 - delivering answers in a natural chat experience
